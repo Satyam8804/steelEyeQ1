@@ -23,6 +23,9 @@
 
 .section {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 1em;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
+

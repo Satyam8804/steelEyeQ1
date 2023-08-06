@@ -2,6 +2,9 @@
   background-color: #043463;
   border-radius: 1em;
   color: white;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .cell {
@@ -21,3 +24,4 @@
 .value {
   border-bottom: 1px solid;
 }
+

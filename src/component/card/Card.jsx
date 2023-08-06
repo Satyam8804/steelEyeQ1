@@ -5,8 +5,8 @@ const Card = ({ cardData, title }) => {
   return (
     <div className={styles.container}>
       <div className={styles.title}>{title}</div>
-      {Object.entries(cardData).map(([k, v]) => (
-        <div className={styles.cell}>
+      {Object.entries(cardData).map(([k, v],idx) => (
+        <div className={styles.cell} key={idx}>
           <div className={styles.value}>{k}</div>
           <div className={styles.value}>{v}</div>
         </div>

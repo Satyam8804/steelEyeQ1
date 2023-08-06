@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Data
-import mockData from "../assets/data.json";
+import data from "../assets/data.json";
 import timestamps from "../assets/timeStamps.json";
+
+
 
 // Components
 import Dropdown from "../component/dropdown/Dropdown";
@@ -19,17 +21,53 @@ const Dashboard = () => {
   const [searchText, setSearchText] = useState("");
   const [selectedOrderDetails, setSelectedOrderDetails] = useState({});
   const [selectedOrderTimeStamps, setSelectedOrderTimeStamps] = useState({});
+  const [mockData,setMockData] = useState(data)
+
+
+  const applyFilter = () => {
+    if (!data.results) return; 
+    if (searchText.trim() === "") {
+      setMockData(data);
+      return;
+    }
+    const filtered = data.results.filter(
+      (item) => item["&id"].toString().toLowerCase().includes(searchText.toLowerCase())
+    );
+    setMockData({ ...mockData, results: filtered }); 
+  };
+  
+  useEffect(() => {
+    applyFilter();
+  }, [searchText]);
+  
+  function handleSearch(e){
+    setSearchText(e.target.value)
+    applyFilter()
+  }
+  
+  
+  if (!mockData) {
+    return <p>Loading...</p>;
+  }
+
+
+  const handleRowClick = (orderDetails, index) => {
+    setSelectedOrderDetails(orderDetails);
+    setSelectedOrderTimeStamps(timestamps.results[index].timestamps);
+  };
 
   return (
-    <div>
+    <div className="main-container">
       <div className={styles.header}>
-        <HeaderTitle primaryTitle="Orders" secondaryTitle="5 orders" />
+        <HeaderTitle primaryTitle="Orders" secondaryTitle={mockData.results.length+" orders"} />
         <div className={styles.actionBox}>
           <Search
+            type="text"
             value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
+            onChange={handleSearch}
+            
           />
-          <Dropdown
+          <Dropdown 
             options={["GBP", "USD", "JPY", "EUR"]}
             onChange={(e) => setCurrency(e.target.value)}
             selectedItem={currency}
@@ -47,7 +85,7 @@ const Dashboard = () => {
             title="Selected Order Timestamps"
           />
         </div>
-        <List rows={mockData.results} />
+        <List rows={mockData.results} time={timestamps.results} currency={currency} searchText={searchText} onRowClick={handleRowClick}/>
       </div>
     </div>
   );
